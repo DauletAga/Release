@@ -13,6 +13,7 @@ use App\Models\Project;
 use App\Models\Release;
 use App\Models\ReleaseTag;
 use App\Models\ReleaseUser;
+use App\Models\Tag;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -77,7 +78,7 @@ class ReleaseController extends BaseController
 		return view('admin.general.edit', [
 			'action' => route('admin.releases.store'),
             'projects' => Project::getProjectList(),
-            'tags' => Project::getProjectList(),
+            'tags' => Tag::getTagList(),
             'users' => User::getUserList(),
 		]);
 	}
@@ -135,7 +136,7 @@ class ReleaseController extends BaseController
 			'row' => $release,
 			'action' => route('admin.releases.update', $release),
             'projects' => Project::getProjectList(),
-            'tags' => Project::getProjectList(),
+            'tags' => Tag::getTagList(),
             'users' => User::getUserList(),
 		]);
 	}
