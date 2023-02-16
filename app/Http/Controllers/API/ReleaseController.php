@@ -203,6 +203,7 @@ class ReleaseController extends AppBaseController
             [
                 'id' => data_get($release, ReleaseContract::FIELD_ID),
                 'name' => data_get($release, ReleaseContract::FIELD_NAME),
+                'text' => data_get($release, ReleaseContract::FIELD_TEXT),
                 'date' => Carbon::parse(data_get($release, ReleaseContract::FIELD_DATE)),
                 'tags' => $release->tags->map(function ($tag){
                     return [
