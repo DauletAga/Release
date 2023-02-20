@@ -7,6 +7,7 @@ use App\Contracts\ReleaseContract;
 use App\Contracts\ReleaseTagContract;
 use App\Contracts\TagContract;
 use App\Contracts\UserContract;
+use App\Models\Project;
 use App\Models\Release;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -113,6 +114,26 @@ class ReleaseController extends AppBaseController
             )
             ->paginate($per_page);
 
+        $project = [];
+        if ($request->has(ReleaseContract::FIELD_PROJECT_ID))
+        {
+            $project = Project::query()
+                ->select(
+                    [
+                        ProjectContract::FIELD_ID,
+                        ProjectContract::FIELD_NAME,
+                        ProjectContract::FIELD_VERSION_COUNT,
+                        ProjectContract::FIELD_UPDATE_COUNT,
+                    ]
+                )
+                ->where(
+                    ProjectContract::FIELD_ID,
+                    $request->get(ReleaseContract::FIELD_PROJECT_ID)
+                )
+                ->get()
+            ;
+        }
+
         $releaseCollection = collect($releases->items());
         $releaseCollection = $releaseCollection
             ->map(function ($item){
@@ -133,18 +154,13 @@ class ReleaseController extends AppBaseController
                             'avatar' => data_get($user, UserContract::FIELD_AVATAR),
                         ];
                     }),
-                    'project' => [
-                        'id' => data_get($item, ReleaseContract::FIELD_PROJECT_ID),
-                        'name' => data_get($item->project, ProjectContract::FIELD_NAME),
-                        'update_count' => data_get($item->project, ProjectContract::FIELD_UPDATE_COUNT),
-                        'version_count' => data_get($item->project, ProjectContract::FIELD_VERSION_COUNT),
-                    ]
                 ];
             });
 
         return $this->sendResponse(
             [
                 'releases' => $releaseCollection,
+                'project' => $project,
                 'hasNext'     => $releases->hasMorePages(),
                 'currentPage' => $releases->currentPage(),
                 'lastPage'    => $releases->lastPage(),
@@ -154,7 +170,6 @@ class ReleaseController extends AppBaseController
 
     public function show($id): JsonResponse
     {
-
         $release = Release::query()
             ->select(
                 [
@@ -190,8 +205,6 @@ class ReleaseController extends AppBaseController
                             [
                                 ProjectContract::FIELD_ID,
                                 ProjectContract::FIELD_NAME,
-                                ProjectContract::FIELD_UPDATE_COUNT,
-                                ProjectContract::FIELD_VERSION_COUNT,
                             ]
                         );
                     },
