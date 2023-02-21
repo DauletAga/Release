@@ -27,7 +27,7 @@ class ProjectController extends AppBaseController
                 return [
                     'id' => data_get($item, ProjectContract::FIELD_ID),
                     'name' => data_get($item, ProjectContract::FIELD_NAME),
-                    'image' => data_get($item, ProjectContract::FIELD_IMAGE),
+                    'image' => data_get($item, ProjectContract::FIELD_IMAGE) ? config('urls.app_url') . data_get($item, ProjectContract::FIELD_IMAGE) : '',
                     'update_count' => data_get($item, ProjectContract::FIELD_UPDATE_COUNT),
                     'version_count' => data_get($item, ProjectContract::FIELD_VERSION_COUNT),
                 ];

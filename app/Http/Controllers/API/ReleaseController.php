@@ -151,7 +151,7 @@ class ReleaseController extends AppBaseController
                         return [
                             'id' => data_get($user, UserContract::FIELD_ID),
                             'name' => data_get($user, UserContract::LOCAL_NAME),
-                            'avatar' => data_get($user, UserContract::FIELD_AVATAR),
+                            'avatar' => data_get($user, UserContract::FIELD_AVATAR) ? config('urls.app_url') . data_get($user, UserContract::FIELD_AVATAR) : '',
                         ];
                     }),
                 ];
@@ -228,7 +228,7 @@ class ReleaseController extends AppBaseController
                     return [
                         'id' => data_get($user, UserContract::FIELD_ID),
                         'name' => data_get($user, UserContract::LOCAL_NAME),
-                        'avatar' => data_get($user, UserContract::FIELD_AVATAR),
+                        'avatar' => data_get($user, UserContract::FIELD_AVATAR) ? config('urls.app_url') . data_get($user, UserContract::FIELD_AVATAR) : '',
                     ];
                 }),
                 'project_name' => data_get($release->project, ProjectContract::FIELD_NAME)
