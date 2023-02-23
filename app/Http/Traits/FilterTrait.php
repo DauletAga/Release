@@ -12,7 +12,7 @@ trait FilterTrait
                 function ($query) {
                     $query->where(
                         'name',
-                        'like',
+                        'ilike',
                         '%' . request('name') . '%'
                     );
                 }
