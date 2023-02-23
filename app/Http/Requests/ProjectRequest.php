@@ -17,7 +17,7 @@ class ProjectRequest extends FormRequest
             ],
             ProjectContract::FIELD_IMAGE => [
                 'nullable',
-                'image'
+                'string'
             ],
         ];
 
