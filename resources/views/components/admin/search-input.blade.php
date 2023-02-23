@@ -9,7 +9,7 @@
                     <input type="hidden" name="parent_id" value="{{ request('parent_id')}}">
                 @endif
                 <div class="input-group input-group-flush input-group-merge input-group-reverse">
-                    <input class="form-control list-search" name="q" value="{{ request('q') }}" type="text" placeholder="Поиск">
+                    <input class="form-control list-search" name="name" value="{{ request('name') }}" type="text" placeholder="Поиск">
                     <span class="input-group-text">
                               <i class="fe fe-search"></i>
                             </span>
