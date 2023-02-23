@@ -164,6 +164,13 @@ class ReleaseController extends BaseController
         $release->tags()->detach();
         $release->users()->detach();
 
+        Project::query()
+            ->where(
+                ProjectContract::FIELD_ID,
+                data_get($release, ReleaseContract::FIELD_PROJECT_ID)
+            )
+            ->decrement(ProjectContract::FIELD_UPDATE_COUNT);
+
 		$release->delete();
 
 		return $this->sendSuccess();
