@@ -23,7 +23,7 @@
 
 <script src="{{ asset('/custom/js/jquery.gritter.js') }}"></script>
 
-<script src="{{ asset('/custom/js/admin.js') }}"></script>
+<script src="{{ asset('/custom/js/admin.js?v=1') }}"></script>
 
 <div id="modal_list"></div>
 

@@ -13,8 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('releases', function (Blueprint $table) {
-            $table->string('image')->nullable();
+        Schema::create('release_images', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedInteger('release_id');
+            $table->foreign('release_id')->references('id')->on('releases');
+            $table->string('image');
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -25,8 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('releases', function (Blueprint $table) {
-            $table->dropColumn('image');
-        });
+        Schema::dropIfExists('release_images');
     }
 };

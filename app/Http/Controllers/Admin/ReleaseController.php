@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Contracts\ProjectContract;
 use App\Contracts\ReleaseContract;
+use App\Contracts\ReleaseImageContract;
 use App\Contracts\ReleaseTagContract;
 use App\Contracts\ReleaseUserContract;
 use App\Contracts\UserContract;
@@ -11,6 +12,7 @@ use App\Http\Controllers\BaseController;
 use App\Http\Requests\ReleaseRequest;
 use App\Models\Project;
 use App\Models\Release;
+use App\Models\ReleaseImage;
 use App\Models\ReleaseTag;
 use App\Models\ReleaseUser;
 use App\Models\Tag;
@@ -95,6 +97,26 @@ class ReleaseController extends BaseController
         );
 		$release = Release::query()->create($data);
 
+        if (count($request->get('images')) > 0) {
+
+            ReleaseImage::query()
+                ->where(
+                    ReleaseImageContract::FIELD_RELEASE_ID,
+                    data_get($release, ReleaseContract::FIELD_ID)
+                )
+                ->delete();
+
+            foreach ($request->get('images') as $item) {
+                ReleaseImage::query()
+                    ->create(
+                        [
+                            ReleaseImageContract::FIELD_RELEASE_ID => data_get($release, ReleaseContract::FIELD_ID),
+                            ReleaseImageContract::FIELD_IMAGE => '/media/' . $item
+                        ]
+                    );
+            }
+        }
+
         $release->tags()->attach(data_get($request, ReleaseContract::LIST_TAGS));
 
         $release->users()->attach(data_get($request, ReleaseContract::LIST_USERS));
@@ -107,6 +129,27 @@ class ReleaseController extends BaseController
 
 	public function edit(Release $release)
 	{
+        $images = ReleaseImage::query()
+            ->select(
+                [
+                    ReleaseImageContract::FIELD_ID,
+                    ReleaseImageContract::FIELD_RELEASE_ID,
+                    ReleaseImageContract::FIELD_IMAGE,
+                ]
+            )
+            ->where(
+                ReleaseImageContract::FIELD_RELEASE_ID,
+                data_get($release, ReleaseContract::FIELD_ID)
+            )
+            ->get();
+
+        $images = $images->map(function ($item) {
+            return [
+                'id' => data_get($item, ReleaseImageContract::FIELD_ID),
+                'image' => data_get($item, ReleaseImageContract::FIELD_IMAGE),
+                'path' => data_get($item, ReleaseImageContract::FIELD_IMAGE),
+            ];
+        });
         $user_ids = ReleaseUser::query()
             ->where(
                 ReleaseUserContract::FIELD_RELEASE_ID,
@@ -138,6 +181,7 @@ class ReleaseController extends BaseController
             'projects' => Project::getProjectList(),
             'tags' => Tag::getTagList(),
             'users' => User::getUserList(),
+            'images' => $images,
 		]);
 	}
 
@@ -150,6 +194,27 @@ class ReleaseController extends BaseController
                 ReleaseContract::FIELD_DATE => Carbon::parse(data_get($request, ReleaseContract::FIELD_DATE))
             ]
         );
+
+        if (count($request->get('images')) > 0) {
+
+            ReleaseImage::query()
+                ->where(
+                    ReleaseImageContract::FIELD_RELEASE_ID,
+                    data_get($release, ReleaseContract::FIELD_ID)
+                )
+                ->delete();
+
+            foreach ($request->get('images') as $item) {
+                ReleaseImage::query()
+                    ->create(
+                        [
+                            ReleaseImageContract::FIELD_RELEASE_ID => data_get($release, ReleaseContract::FIELD_ID),
+                            ReleaseImageContract::FIELD_IMAGE => '/media/' . $item
+                        ]
+                    );
+            }
+        }
+
 		$release->update($data);
 
         $release->tags()->sync(data_get($request, ReleaseContract::LIST_TAGS));

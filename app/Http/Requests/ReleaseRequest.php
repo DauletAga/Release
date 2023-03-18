@@ -27,10 +27,6 @@ class ReleaseRequest extends FormRequest
                 'nullable',
                 'date'
             ],
-            ReleaseContract::FIELD_IMAGE => [
-                'nullable',
-                'string'
-            ],
         ];
     }
 }
