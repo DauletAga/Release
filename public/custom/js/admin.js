@@ -262,6 +262,32 @@ function showFileModal(name,type) {
     });
 }
 
+function showFileMultipleModal(type) {
+    $('.ajax-loader').fadeIn();
+
+    $.ajax({
+        url:'/file/multiple-modal',
+        type: 'GET',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: {
+            type: type
+        },
+        success: function (data) {
+            $('.ajax-loader').fadeOut();
+
+            if(data.status === false){
+                $('#upload_image').find('.alert').html(data.error);
+                $('#upload_image').find('.alert').fadeIn(0);
+                return;
+            }
+            $('#modal_list').html(data);
+            $('#upload_media_modal').modal('show');
+        }
+    });
+}
+
 function uploadMedia(ob) {
     $(ob).closest('form').submit();
 }
@@ -292,6 +318,70 @@ function uploadImageSubmit(ob,event){
             $('input[name=' + $('#media_name').val() + ']').val(data.name);
 
             $(ob).closest('.modal').modal('hide');
+        }
+    });
+}
+
+function uploadMultipleFileSubmit(ob,event){
+    event.preventDefault();
+    var formData = new FormData($(ob)[0]);
+
+    $.ajax({
+        url:'/file/multiple-upload',
+        type: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: formData,
+        async: true,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function (data) {
+            $('.ajax-loader').css('display','none');
+
+            if(data.status === false){
+                showError(data.error);
+                return;
+            }
+
+            if(data.type == 'images'){
+                $('#images_cover').append(data.view);
+            }
+
+            $(ob).closest('.modal').modal('hide');
+
+        }
+    });
+}
+
+function confirmDeleteImage(ob) {
+    if(confirm('Действительно хотите  удалить?')){
+        $(ob).closest('.imageItem').remove();
+    }
+}
+
+function deleteGalleryImages($image_id,$route){
+    $('.ajax-loader').fadeIn();
+
+    $.ajax({
+        url: '/admin/'+ $route,
+        type: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        data :{
+            image_id: $image_id
+        },
+        success: function (data) {
+            $('.ajax-loader').css('display','none');
+            if(data.status === false){
+                showError(data.error);
+                return;
+            }
+
+            $('#image_'+ $image_id).find(':input').remove();
+            $('#image_'+ $image_id).remove();
         }
     });
 }

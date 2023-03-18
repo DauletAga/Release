@@ -5,7 +5,11 @@
                 <div class="row">
                     <div class="col-12 col-md-8">
 
-                        <x-admin.form.upload-image :row="$row ?? null" title="Фото изменений" type="img" name="image"/>
+                        <x-admin.form.upload-multiple-images :row="$row ?? null" title="Выберите файлы" type="images"/>
+
+                        @include('admin.releases.image-list')
+
+                        <div id="images_cover"></div>
 
                         <x-admin.form.input :row="$row ?? null" title="Название" type="text" name="name"/>
 

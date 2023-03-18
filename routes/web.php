@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\MediaController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,4 +25,12 @@ Route::group([
     Route::get('modal', [MediaController::class,'showModal']);
     Route::post('upload', [MediaController::class,'uploadFile']);
     Route::get('{file_name}', [MediaController::class,'showMedia'])->where('file_name', '.*');
+});
+
+Route::group([
+    'prefix' => 'file'
+], function () {
+    Route::get('multiple-modal', [FileController::class,'showMultipleModal']);
+    Route::post('multiple-upload', [FileController::class,'storeMultipleFiles'])->name('file.multiple-upload');
+    Route::delete('', [FileController::class,'destroy']);
 });
