@@ -4,7 +4,10 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-12 col-md-8">
-                       <x-admin.form.input :row="$row ?? null" title="Название" type="text" name="name"/>
+
+                        <x-admin.form.upload-image :row="$row ?? null" title="Фото изменений" type="img" name="image"/>
+
+                        <x-admin.form.input :row="$row ?? null" title="Название" type="text" name="name"/>
 
                         <x-admin.form.ckeditor_textarea :row="$row ?? null" title="Текст" type="text" name="text"/>
 
