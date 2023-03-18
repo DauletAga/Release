@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Contracts\ProjectContract;
 use App\Contracts\ReleaseContract;
+use App\Contracts\ReleaseImageContract;
 use App\Contracts\ReleaseTagContract;
 use App\Contracts\TagContract;
 use App\Contracts\UserContract;
@@ -12,6 +13,7 @@ use App\Models\Release;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -208,6 +210,14 @@ class ReleaseController extends AppBaseController
                             ]
                         );
                     },
+                    'images' => function (HasMany $query) {
+                        $query->select(
+                            [
+                                ReleaseImageContract::FIELD_RELEASE_ID,
+                                ReleaseImageContract::FIELD_IMAGE
+                            ]
+                        );
+                    },
                 ]
             )
             ->findOrFail($id);
@@ -231,6 +241,11 @@ class ReleaseController extends AppBaseController
                         'avatar' => data_get($user, UserContract::FIELD_AVATAR) ? config('urls.app_url') . data_get($user, UserContract::FIELD_AVATAR) : '',
                     ];
                 }),
+                'gallery' =>
+                    $release->images->map(function ($image) {
+                        return data_get($image, ProjectContract::FIELD_IMAGE) ?
+                            config('urls.app_url') . data_get($image, ProjectContract::FIELD_IMAGE) : '';
+                    }),
                 'project_name' => data_get($release->project, ProjectContract::FIELD_NAME)
             ]
         );
