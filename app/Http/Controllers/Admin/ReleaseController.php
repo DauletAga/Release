@@ -98,7 +98,7 @@ class ReleaseController extends BaseController
         );
 		$release = Release::query()->create($data);
 
-        if (count($request->get('images')) > 0) {
+        if ($request->get('images') != null && count($request->get('images')) > 0) {
 
             foreach ($request->get('images') as $item) {
                 ReleaseImage::query()
@@ -189,7 +189,7 @@ class ReleaseController extends BaseController
             ]
         );
 
-        if (count($request->get('images')) > 0) {
+        if ($request->get('images') != null && count($request->get('images')) > 0) {
 
             ReleaseImage::query()
                 ->where(
