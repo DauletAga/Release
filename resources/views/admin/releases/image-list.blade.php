@@ -15,7 +15,7 @@
                 </div>
                 <a href="javascript:void(0)"
                    @if(isset($val['id']))
-                   onclick="deleteGalleryImages({{ $val['id'] }},'product-images')"
+                   onclick="deleteGalleryImages({{ $val['id'] }},'release-images')"
                    @else
                    onclick="confirmDeleteImage(this)"
                    @endif

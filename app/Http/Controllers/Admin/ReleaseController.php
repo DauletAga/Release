@@ -19,6 +19,7 @@ use App\Models\Tag;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
 class ReleaseController extends BaseController
@@ -99,19 +100,12 @@ class ReleaseController extends BaseController
 
         if (count($request->get('images')) > 0) {
 
-            ReleaseImage::query()
-                ->where(
-                    ReleaseImageContract::FIELD_RELEASE_ID,
-                    data_get($release, ReleaseContract::FIELD_ID)
-                )
-                ->delete();
-
             foreach ($request->get('images') as $item) {
                 ReleaseImage::query()
                     ->create(
                         [
                             ReleaseImageContract::FIELD_RELEASE_ID => data_get($release, ReleaseContract::FIELD_ID),
-                            ReleaseImageContract::FIELD_IMAGE => '/media/' . $item
+                            ReleaseImageContract::FIELD_IMAGE => $item
                         ]
                     );
             }
@@ -209,7 +203,7 @@ class ReleaseController extends BaseController
                     ->create(
                         [
                             ReleaseImageContract::FIELD_RELEASE_ID => data_get($release, ReleaseContract::FIELD_ID),
-                            ReleaseImageContract::FIELD_IMAGE => '/media/' . $item
+                            ReleaseImageContract::FIELD_IMAGE => $item
                         ]
                     );
             }
@@ -240,5 +234,17 @@ class ReleaseController extends BaseController
 
 		return $this->sendSuccess();
 	}
+
+    public function deleteImages(Request $request)
+    {
+        ReleaseImage::query()
+            ->where(
+                ReleaseImageContract::FIELD_ID,
+                $request->get('image_id')
+            )
+            ->delete();
+
+        $this->sendSuccess();
+    }
 
 }

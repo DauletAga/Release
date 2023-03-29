@@ -38,7 +38,7 @@ class FileController extends BaseController
                 try {
                     $filePath = Storage::disk('media')->putFile($path, $image);
 
-                    $images[$key]['image'] = $filePath;
+                    $images[$key]['image'] = '/media/' . $filePath;
                     $images[$key]['path'] = '/media/' . $filePath;
 
                 } catch (\Exception) {

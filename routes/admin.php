@@ -34,4 +34,6 @@ Route::group([
 	Route::resource('tags', TagController::class);
 
 	Route::resource('releases', ReleaseController::class);
+
+    Route::delete('release-images', [ReleaseController::class, 'deleteImages']);
 });
