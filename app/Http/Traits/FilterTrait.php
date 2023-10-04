@@ -22,13 +22,13 @@ trait FilterTrait
 	public function scopeOrder(Builder $model){
 		$model
 			->when(
-				request('sort') == 'old',
+				request('sort') != 'old',
 				function ($query) {
 					$query->orderByDesc('id');
 				}
 			)
 			->when(
-				request('sort') != 'old',
+				request('sort') == 'old',
 				function ($query) {
 					$query->orderBy('id');
 				}
